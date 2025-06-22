@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vida Sana - Sistema Médico</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <h1>Vida Sana</h1>
+  <nav>
+    <ul>
+      <li><a href="#" onclick="showSection('dashboard')">Dashboard</a></li>
+      <li><a href="#" onclick="showSection('pacientes')">Pacientes</a></li>
+      <li><a href="#" onclick="showSection('medicos')">Médicos</a></li>
+      <li><a href="#" onclick="showSection('turnos')">Turnos</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <!-- Sección Dashboard -->
+  <section id="dashboard" class="active">
+    <h2>Dashboard</h2>
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3>Total Pacientes</h3>
+        <p id="total-pacientes">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Turnos Pendientes</h3>
+        <p id="turnos-pendientes">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Promedio Sueño</h3>
+        <p id="promedio-sueno">0</p>
+      </div>
+    </div>
+    <div class="chart-container">
+      <h3>Pacientes por Médico</h3>
+      <div id="pacientes-medico-chart"></div>
+    </div>
+  </section>
+
+  <!-- Sección Pacientes -->
+  <section id="pacientes">
+    <h2>Gestión de Pacientes</h2>
+    <div class="form-container">
+      <h3>Registrar Nuevo Paciente</h3>
+      <form id="paciente-form">
+        <input type="text" id="paciente-nombre" placeholder="Nombre" required>
+        <input type="text" id="paciente-apellido" placeholder="Apellido" required>
+        <input type="email" id="paciente-email" placeholder="Email" required>
+        <input type="number" id="paciente-dni" placeholder="DNI" required>
+        <input type="text" id="paciente-nacionalidad" placeholder="Nacionalidad">
+        <input type="number" id="paciente-edad" placeholder="Edad">
+        <input type="date" id="paciente-fecha-nac">
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
+    <div class="list-container">
+      <h3>Lista de Pacientes</h3>
+      <table id="pacientes-table">
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Sección Médicos -->
+  <section id="medicos">
+    <h2>Gestión de Médicos</h2>
+    <div class="form-container">
+      <h3>Registrar Nuevo Médico</h3>
+      <form id="medico-form">
+        <input type="text" id="medico-nombre" placeholder="Nombre" required>
+        <input type="text" id="medico-apellido" placeholder="Apellido" required>
+        <input type="email" id="medico-email" placeholder="Email" required>
+        <input type="number" id="medico-dni" placeholder="DNI" required>
+        <input type="number" id="medico-edad" placeholder="Edad">
+        <input type="date" id="medico-fecha-nac">
+        <input type="text" id="medico-disciplina" placeholder="Disciplina">
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
+    <div class="list-container">
+      <h3>Lista de Médicos</h3>
+      <table id="medicos-table">
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Disciplina</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Sección Turnos -->
+  <section id="turnos">
+    <h2>Gestión de Turnos</h2>
+    <div class="form-container">
+      <h3>Crear Nuevo Turno</h3>
+      <form id="turno-form">
+        <select id="turno-paciente" required>
+          <option value="">Seleccione un paciente</option>
+        </select>
+        <select id="turno-medico" required>
+          <option value="">Seleccione un médico</option>
+        </select>
+        <input type="datetime-local" id="turno-fecha" required>
+        <select id="turno-estado" required>
+          <option value="pendiente">Pendiente</option>
+          <option value="completado">Completado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <button type="submit">Programar Turno</button>
+      </form>
+    </div>
+    <div class="list-container">
+      <h3>Lista de Turnos</h3>
+      <table id="turnos-table">
+        <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Médico</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Sistema Médico Vida Sana &copy; 2025</p>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/pacientes.js"></script>
+<script src="js/medicos.js"></script>
+<script src="js/turnos.js"></script>
+</body>
+</html>

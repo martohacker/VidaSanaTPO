@@ -4,37 +4,60 @@ async function loadDashboardData() {
         document.getElementById('total-pacientes').textContent = data.totalPacientes;
         document.getElementById('turnos-pendientes').textContent = data.totalTurnosPendientes;
         document.getElementById('promedio-sueno').textContent = data.promedioSueno.toFixed(1);
-
-        // Crear gráfico simple de pacientes por médico
-        const chartContainer = document.getElementById('pacientes-medico-chart');
-        chartContainer.innerHTML = '';
-
-        for (const [medico, cantidad] of Object.entries(data.pacientesPorMedico)) {
-            const barContainer = document.createElement('div');
-            barContainer.style.marginBottom = '10px';
-
-            const label = document.createElement('span');
-            label.textContent = medico;
-            label.style.display = 'inline-block';
-            label.style.width = '200px';
-            label.style.marginRight = '10px';
-
-            const bar = document.createElement('div');
-            bar.style.display = 'inline-block';
-            bar.style.height = '20px';
-            bar.style.backgroundColor = '#3498db';
-            bar.style.width = `${cantidad * 20}px`;
-            bar.style.borderRadius = '4px';
-
-            const count = document.createElement('span');
-            count.textContent = cantidad;
-            count.style.marginLeft = '10px';
-
-            barContainer.appendChild(label);
-            barContainer.appendChild(bar);
-            barContainer.appendChild(count);
-            chartContainer.appendChild(barContainer);
+        document.getElementById('alertas-pendientes').textContent = data.totalAlertasPendientes || 0;
+        
+        // Cargar alertas recientes
+        loadAlertasRecientes();
+        
+        // Cargar gráfico de pacientes por médico
+        if (data.pacientesPorMedico) {
+            const chartContainer = document.getElementById('pacientes-medico-chart');
+            chartContainer.innerHTML = '';
+            
+            Object.entries(data.pacientesPorMedico).forEach(([medico, cantidad]) => {
+                const div = document.createElement('div');
+                div.className = 'chart-item';
+                div.innerHTML = `
+                    <span class="medico-nombre">${medico}</span>
+                    <span class="paciente-count">${cantidad} pacientes</span>
+                `;
+                chartContainer.appendChild(div);
+            });
         }
+    }
+}
+
+async function loadAlertasRecientes() {
+    const alertas = await api.getAlertas();
+    const container = document.getElementById('alertas-recientes');
+    container.innerHTML = '';
+    
+    if (alertas && alertas.length > 0) {
+        // Mostrar solo las 5 alertas más recientes
+        const alertasRecientes = alertas.slice(0, 5);
+        alertasRecientes.forEach(alerta => {
+            const div = document.createElement('div');
+            div.className = `alerta-item ${alerta.tipo}`;
+            div.innerHTML = `
+                <div class="alerta-header">
+                    <span class="alerta-tipo">${alerta.tipo}</span>
+                    <span class="alerta-fecha">${new Date(alerta.fecha).toLocaleDateString()}</span>
+                </div>
+                <div class="alerta-paciente">${alerta.paciente ? (alerta.paciente.nombre + ' ' + alerta.paciente.apellido) : 'Paciente no disponible'}</div>
+                <div class="alerta-descripcion">${alerta.descripcion}</div>
+                <button class="btn-resolver" onclick="marcarAlertaResuelta('${alerta.id}')">Marcar Resuelta</button>
+            `;
+            container.appendChild(div);
+        });
+    } else {
+        container.innerHTML = '<p>No hay alertas pendientes</p>';
+    }
+}
+
+async function marcarAlertaResuelta(alertaId) {
+    const result = await api.marcarAlertaResuelta(alertaId);
+    if (result) {
+        loadDashboardData(); // Recargar dashboard
     }
 }
 

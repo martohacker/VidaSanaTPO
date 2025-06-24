@@ -9,14 +9,40 @@ document.addEventListener('DOMContentLoaded', () => {
     medicoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        // Validación frontend
+        const nombre = document.getElementById('medico-nombre').value.trim();
+        const apellido = document.getElementById('medico-apellido').value.trim();
+        const mail = document.getElementById('medico-email').value.trim();
+        const dni = document.getElementById('medico-dni').value.trim();
+        const edad = document.getElementById('medico-edad').value.trim();
+        const fechaNac = document.getElementById('medico-fecha-nac').value.trim();
+        const disciplina = document.getElementById('medico-disciplina').value.trim();
+
+        if (!nombre || !apellido || !mail || !dni || !edad || !fechaNac || !disciplina) {
+            alert('Por favor, complete todos los campos obligatorios.');
+            return;
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) {
+            alert('Ingrese un email válido.');
+            return;
+        }
+        if (isNaN(parseInt(dni)) || parseInt(dni) <= 0) {
+            alert('El DNI debe ser un número mayor que 0.');
+            return;
+        }
+        if (isNaN(parseInt(edad)) || parseInt(edad) <= 0) {
+            alert('La edad debe ser un número mayor que 0.');
+            return;
+        }
+
         const medico = {
-            nombre: document.getElementById('medico-nombre').value,
-            apellido: document.getElementById('medico-apellido').value,
-            mail: document.getElementById('medico-email').value,
-            dni: parseInt(document.getElementById('medico-dni').value),
-            edad: parseInt(document.getElementById('medico-edad').value),
-            fechaNac: document.getElementById('medico-fecha-nac').value,
-            disciplina: document.getElementById('medico-disciplina').value
+            nombre,
+            apellido,
+            mail,
+            dni: parseInt(dni),
+            edad: parseInt(edad),
+            fechaNac,
+            disciplina
         };
 
         const result = await api.createMedico(medico);

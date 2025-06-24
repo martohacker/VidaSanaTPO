@@ -11,11 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
     turnoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        // Validación frontend
+        const pacienteId = document.getElementById('turno-paciente').value.trim();
+        const medicoId = document.getElementById('turno-medico').value.trim();
+        const fechaHora = document.getElementById('turno-fecha').value.trim();
+        const estado = document.getElementById('turno-estado').value.trim();
+
+        if (!pacienteId || !medicoId || !fechaHora || !estado) {
+            alert('Por favor, complete todos los campos obligatorios.');
+            return;
+        }
+
         const turno = {
-            pacienteId: document.getElementById('turno-paciente').value,
-            medicoId: document.getElementById('turno-medico').value,
-            fechaHora: document.getElementById('turno-fecha').value,
-            estado: document.getElementById('turno-estado').value
+            pacienteId,
+            medicoId,
+            fechaHora,
+            estado
         };
 
         const result = await api.createTurno(turno);

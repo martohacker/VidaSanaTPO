@@ -38,7 +38,9 @@ public class Medico {
 
     public List<Turno> verTurnos() { return turnos; }
     public void agregarTurno(Turno turno) { turnos.add(turno); }
-    public void modificarHistorial(Paciente paciente, String diagnostico) { paciente.getHistorialMedico().agregarEntrada(this, diagnostico); }
+    public void modificarHistorial(Paciente paciente, String diagnostico) { 
+        paciente.getHistorialMedico().agregarDiagnostico(this, "Diagnóstico", diagnostico); 
+    }
     public Historial verHistorial(Paciente paciente) { return paciente.getHistorialMedico(); }
     public void removerTurnosDePaciente(Paciente p) {
         turnos.removeIf(t -> t.getPacienteId().equals(String.valueOf(p.getDni())));

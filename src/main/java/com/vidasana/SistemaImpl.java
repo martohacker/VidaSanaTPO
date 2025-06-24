@@ -156,14 +156,18 @@ public class SistemaImpl implements Sistema {
 
             System.out.print("Descripción del evento médico: ");
             String evento = scanner.nextLine();
-            paciente.getHistorialMedico().agregarEntrada(medico, evento);
+            paciente.getHistorialMedico().agregarDiagnostico(medico, "Evento médico", evento);
             System.out.println("Evento agregado al historial.");
         } else if (opcion == 2) {
             System.out.print("Número de entrada a eliminar: ");
             int indice = scanner.nextInt();
             scanner.nextLine();
-            paciente.getHistorialMedico().eliminarEntrada(indice - 1);
-            System.out.println("Evento eliminado.");
+            if (indice > 0 && indice <= paciente.getHistorialMedico().getEntradas().size()) {
+                paciente.getHistorialMedico().getEntradas().remove(indice - 1);
+                System.out.println("Evento eliminado.");
+            } else {
+                System.out.println("Índice no válido.");
+            }
         } else {
             System.out.println("Opción no válida.");
         }

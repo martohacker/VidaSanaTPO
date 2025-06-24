@@ -71,6 +71,7 @@ async function deleteData(endpoint) {
 const api = {
     // Pacientes
     getPacientes: () => fetchData('/pacientes'),
+    getPaciente: (id) => fetchData(`/pacientes/${id}`),
     createPaciente: (paciente) => postData('/pacientes', paciente),
     updatePaciente: (id, paciente) => putData(`/pacientes/${id}`, paciente),
     deletePaciente: (id) => deleteData(`/pacientes/${id}`),
@@ -94,7 +95,26 @@ const api = {
     getHabitosByPaciente: (pacienteId) => fetchData(`/habitosysintomas?pacienteId=${pacienteId}`),
 
     // Riesgo
-    getRiesgoPaciente: (pacienteId) => fetchData(`/riesgo/${pacienteId}`)
+    getRiesgoPaciente: (pacienteId) => fetchData(`/riesgo/${pacienteId}`),
+
+    // Hábitos y síntomas diarios
+    getHabitosSintomas: (pacienteId) => fetchData(`/pacientes/${pacienteId}/habitosysintomas`),
+    addHabitoSintoma: (pacienteId, data) => postData(`/pacientes/${pacienteId}/habitosysintomas`, data),
+    deleteHabitoSintoma: (pacienteId, indice) => deleteData(`/pacientes/${pacienteId}/habitosysintomas/${indice}`),
+
+    // Alertas
+    getAlertas: () => fetchData('/alertas'),
+    getAlertasPendientes: () => fetchData('/alertas/pendientes'),
+    getAlertasByPaciente: (pacienteId) => fetchData(`/alertas/paciente/${pacienteId}`),
+    createAlerta: (alerta) => postData('/alertas', alerta),
+    marcarAlertaResuelta: (id) => putData(`/alertas/${id}/resolver`, {}),
+    deleteAlerta: (id) => deleteData(`/alertas/${id}`),
+
+    // Autenticación y usuarios
+    login: (credentials) => postData('/auth/login', credentials),
+    getUsuarioInfo: (id) => fetchData(`/auth/usuario/${id}`),
+    registrarUsuario: (usuario) => postData('/auth/registrar', usuario),
+    getUsuariosByRol: (rol) => fetchData(`/auth/usuarios/${rol}`)
 };
 
 // Función para mostrar secciones
@@ -105,9 +125,9 @@ function showSection(sectionId) {
     document.getElementById(sectionId).classList.add('active');
 }
 
-// Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-    // Mostrar dashboard por defecto
-    showSection('dashboard');
-    loadDashboardData();
-});
+// Inicialización - ahora se maneja desde auth.js
+// document.addEventListener('DOMContentLoaded', () => {
+//     // Mostrar dashboard por defecto
+//     showSection('dashboard');
+//     loadDashboardData();
+// });

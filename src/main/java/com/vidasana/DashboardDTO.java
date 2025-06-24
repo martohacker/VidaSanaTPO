@@ -7,6 +7,7 @@ public class DashboardDTO {
     private long totalTurnosPendientes;
     private Map<String, Integer> pacientesPorMedico;
     private double promedioSueno;
+    private long totalAlertasPendientes;
 
     public DashboardDTO() {}
 
@@ -17,6 +18,14 @@ public class DashboardDTO {
         this.promedioSueno = promedioSueno;
     }
 
+    public DashboardDTO(long totalPacientes, long totalTurnosPendientes, Map<String, Integer> pacientesPorMedico, double promedioSueno, long totalAlertasPendientes) {
+        this.totalPacientes = totalPacientes;
+        this.totalTurnosPendientes = totalTurnosPendientes;
+        this.pacientesPorMedico = pacientesPorMedico;
+        this.promedioSueno = promedioSueno;
+        this.totalAlertasPendientes = totalAlertasPendientes;
+    }
+
     public long getTotalPacientes() { return totalPacientes; }
     public void setTotalPacientes(long totalPacientes) { this.totalPacientes = totalPacientes; }
     public long getTotalTurnosPendientes() { return totalTurnosPendientes; }
@@ -25,4 +34,6 @@ public class DashboardDTO {
     public void setPacientesPorMedico(Map<String, Integer> pacientesPorMedico) { this.pacientesPorMedico = pacientesPorMedico; }
     public double getPromedioSueno() { return promedioSueno; }
     public void setPromedioSueno(double promedioSueno) { this.promedioSueno = promedioSueno; }
+    public long getTotalAlertasPendientes() { return totalAlertasPendientes; }
+    public void setTotalAlertasPendientes(long totalAlertasPendientes) { this.totalAlertasPendientes = totalAlertasPendientes; }
 } 

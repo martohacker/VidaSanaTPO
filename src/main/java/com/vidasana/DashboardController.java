@@ -3,6 +3,7 @@ package com.vidasana;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.vidasana.repository.AlertaRepository;
 import java.util.HashMap; 
 import java.util.List;
 import java.util.Map;
@@ -17,11 +18,14 @@ public class DashboardController {
     private MedicoRepository medicoRepository;
     @Autowired
     private HabitoYSintomaRepository habitoYSintomaRepository;
+    @Autowired
+    private AlertaRepository alertaRepository;
 
     @GetMapping("/dashboard")
     public DashboardDTO getDashboard() {
         long totalPacientes = pacienteRepository.count();
         long totalTurnosPendientes = turnoRepository.countByEstado("pendiente");
+        long totalAlertasPendientes = alertaRepository.countByEstado(Alerta.EstadoAlerta.PENDIENTE);
 
         Map<String, Integer> pacientesPorMedico = new HashMap<>();
         medicoRepository.findAll().forEach(medico -> {
@@ -36,6 +40,6 @@ public class DashboardController {
             promedioSueno = habitos.stream().mapToInt(HabitoYSintoma::getSueno).average().orElse(0);
         }
 
-        return new DashboardDTO(totalPacientes, totalTurnosPendientes, pacientesPorMedico, promedioSueno);
+        return new DashboardDTO(totalPacientes, totalTurnosPendientes, pacientesPorMedico, promedioSueno, totalAlertasPendientes);
     }
 } 

@@ -9,7 +9,12 @@
 <body>
 <header>
   <h1>Vida Sana</h1>
-  <nav>
+  <div id="user-info" style="display:none;">
+    <span id="user-name"></span>
+    <span id="user-role"></span>
+    <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
+  </div>
+  <nav id="main-nav" style="display:none;">
     <ul>
       <li><a href="#" onclick="showSection('dashboard')">Dashboard</a></li>
       <li><a href="#" onclick="showSection('pacientes')">Pacientes</a></li>
@@ -20,6 +25,30 @@
 </header>
 
 <main>
+  <!-- Sección Login -->
+  <section id="login" class="active">
+    <div class="login-container">
+      <h2>Iniciar Sesión - Vida Sana</h2>
+      <form id="login-form">
+        <input type="text" id="login-username" placeholder="Usuario" required>
+        <input type="password" id="login-password" placeholder="Contraseña" required>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+      <div class="demo-accounts">
+        <h3>Cuentas de demostración:</h3>
+        <div class="account-item">
+          <strong>Admin:</strong> admin / admin123
+        </div>
+        <div class="account-item">
+          <strong>Médico:</strong> medico1 / medico123
+        </div>
+        <div class="account-item">
+          <strong>Paciente:</strong> paciente1 / paciente123
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Sección Dashboard -->
   <section id="dashboard" class="active">
     <h2>Dashboard</h2>
@@ -36,10 +65,18 @@
         <h3>Promedio Sueño</h3>
         <p id="promedio-sueno">0</p>
       </div>
+      <div class="stat-card alert-card">
+        <h3>Alertas Pendientes</h3>
+        <p id="alertas-pendientes">0</p>
+      </div>
     </div>
     <div class="chart-container">
       <h3>Pacientes por Médico</h3>
       <div id="pacientes-medico-chart"></div>
+    </div>
+    <div class="alertas-container">
+      <h3>Alertas Recientes</h3>
+      <div id="alertas-recientes"></div>
     </div>
   </section>
 
@@ -56,6 +93,7 @@
         <input type="text" id="paciente-nacionalidad" placeholder="Nacionalidad">
         <input type="number" id="paciente-edad" placeholder="Edad">
         <input type="date" id="paciente-fecha-nac">
+        <input type="text" id="paciente-sueno" placeholder="Sueño (horas por noche)">
         <button type="submit">Registrar</button>
       </form>
     </div>
@@ -73,6 +111,41 @@
         </thead>
         <tbody></tbody>
       </table>
+    </div>
+
+    <!-- Sección de Simulación -->
+    <div class="form-container">
+      <h3>🔄 Simulación de Datos de Prueba</h3>
+      <p style="color: #666; margin-bottom: 1rem;">
+        Genera datos de prueba para demostrar las capacidades del sistema VidaSana.
+      </p>
+      
+      <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+        <select id="simulacion-paciente" style="flex: 1;">
+          <option value="">Seleccione un paciente</option>
+        </select>
+        <button onclick="cargarPacientesSimulacion()" class="action-btn">Cargar Pacientes</button>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <button onclick="simularHabitos()" class="simulacion-btn">
+          📊 Simular Hábitos (30 días)
+        </button>
+        <button onclick="simularSensores()" class="simulacion-btn">
+          📱 Simular Sensores (7 días)
+        </button>
+        <button onclick="simularHistorial()" class="simulacion-btn">
+          📋 Simular Historial
+        </button>
+        <button onclick="simulacionCompleta()" class="simulacion-btn completo">
+          🚀 Simulación Completa
+        </button>
+      </div>
+      
+      <div id="simulacion-resultado" style="margin-top: 1rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; display: none;">
+        <h4>Resultado de la Simulación</h4>
+        <div id="simulacion-mensaje"></div>
+      </div>
     </div>
   </section>
 
@@ -146,6 +219,120 @@
       </table>
     </div>
   </section>
+
+  <!-- Modal Historial Médico -->
+  <div id="modal-historial" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" id="close-historial">&times;</span>
+      <h3>Historial Médico de <span id="historial-nombre"></span></h3>
+      
+      <!-- Selector de tipo de entrada -->
+      <div style="margin-bottom: 1rem;">
+        <label for="tipo-entrada">Tipo de Entrada:</label>
+        <select id="tipo-entrada" onchange="cambiarFormularioHistorial()">
+          <option value="nota">Nota General</option>
+          <option value="diagnostico">Diagnóstico</option>
+          <option value="receta">Receta Médica</option>
+          <option value="examen">Resultado de Examen</option>
+          <option value="tratamiento">Plan de Tratamiento</option>
+          <option value="alergia">Información de Alergia</option>
+          <option value="vacuna">Registro de Vacuna</option>
+        </select>
+      </div>
+
+      <!-- Formulario para Nota -->
+      <form id="form-nota" class="form-entrada" style="display:block;">
+        <input type="text" id="nota-medico" placeholder="Médico" required>
+        <input type="text" id="nota-titulo" placeholder="Título" required>
+        <textarea id="nota-descripcion" placeholder="Descripción" required></textarea>
+        <button type="submit">Agregar Nota</button>
+      </form>
+
+      <!-- Formulario para Diagnóstico -->
+      <form id="form-diagnostico" class="form-entrada" style="display:none;">
+        <input type="text" id="diagnostico-medico" placeholder="Médico" required>
+        <input type="text" id="diagnostico-titulo" placeholder="Título del diagnóstico" required>
+        <textarea id="diagnostico-descripcion" placeholder="Descripción del diagnóstico" required></textarea>
+        <button type="submit">Agregar Diagnóstico</button>
+      </form>
+
+      <!-- Formulario para Receta -->
+      <form id="form-receta" class="form-entrada" style="display:none;">
+        <input type="text" id="receta-medico" placeholder="Médico" required>
+        <input type="text" id="receta-titulo" placeholder="Título de la receta" required>
+        <textarea id="receta-descripcion" placeholder="Descripción" required></textarea>
+        <input type="text" id="receta-medicamentos" placeholder="Medicamentos" required>
+        <input type="text" id="receta-dosis" placeholder="Dosis" required>
+        <input type="text" id="receta-duracion" placeholder="Duración del tratamiento" required>
+        <button type="submit">Agregar Receta</button>
+      </form>
+
+      <!-- Formulario para Examen -->
+      <form id="form-examen" class="form-entrada" style="display:none;">
+        <input type="text" id="examen-medico" placeholder="Médico" required>
+        <input type="text" id="examen-titulo" placeholder="Título del examen" required>
+        <textarea id="examen-descripcion" placeholder="Descripción" required></textarea>
+        <textarea id="examen-resultado" placeholder="Resultado del examen" required></textarea>
+        <button type="submit">Agregar Examen</button>
+      </form>
+
+      <!-- Formulario para Tratamiento -->
+      <form id="form-tratamiento" class="form-entrada" style="display:none;">
+        <input type="text" id="tratamiento-medico" placeholder="Médico" required>
+        <input type="text" id="tratamiento-titulo" placeholder="Título del tratamiento" required>
+        <textarea id="tratamiento-descripcion" placeholder="Descripción del tratamiento" required></textarea>
+        <input type="text" id="tratamiento-duracion" placeholder="Duración del tratamiento" required>
+        <button type="submit">Agregar Tratamiento</button>
+      </form>
+
+      <!-- Formulario para Alergia -->
+      <form id="form-alergia" class="form-entrada" style="display:none;">
+        <input type="text" id="alergia-medico" placeholder="Médico" required>
+        <input type="text" id="alergia-titulo" placeholder="Título" required>
+        <textarea id="alergia-descripcion" placeholder="Descripción" required></textarea>
+        <input type="text" id="alergia-alergeno" placeholder="Alérgeno" required>
+        <button type="submit">Agregar Alergia</button>
+      </form>
+
+      <!-- Formulario para Vacuna -->
+      <form id="form-vacuna" class="form-entrada" style="display:none;">
+        <input type="text" id="vacuna-medico" placeholder="Médico" required>
+        <input type="text" id="vacuna-titulo" placeholder="Título" required>
+        <textarea id="vacuna-descripcion" placeholder="Descripción" required></textarea>
+        <input type="text" id="vacuna-vacuna" placeholder="Nombre de la vacuna" required>
+        <input type="text" id="vacuna-lote" placeholder="Número de lote" required>
+        <button type="submit">Agregar Vacuna</button>
+      </form>
+
+      <!-- Lista de entradas del historial -->
+      <div style="margin-top: 2rem;">
+        <h4>Entradas del Historial</h4>
+        <div id="historial-lista"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Hábitos/Síntomas Diarios -->
+  <div id="modal-habitos" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" id="close-habitos">&times;</span>
+      <h3>Hábitos y Síntomas Diarios de <span id="habitos-nombre"></span></h3>
+      <ul id="habitos-lista"></ul>
+      <form id="form-habitos">
+        <input type="date" id="habitos-fecha" required>
+        <input type="text" id="habitos-descripcion" placeholder="Descripción del hábito o síntoma" required>
+        <button type="submit">Agregar Registro</button>
+      </form>
+      
+      <!-- Contenedor para mostrar el scoring de riesgo -->
+      <div id="scoring-container" style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+        <h4 style="margin: 0 0 1rem 0; color: #333;">📊 Evaluación de Riesgo Actual</h4>
+        <div id="scoring-info">
+          <p style="margin: 0; color: #666;">Cargando evaluación de riesgo...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <footer>
@@ -153,6 +340,7 @@
 </footer>
 
 <script src="js/api.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/pacientes.js"></script>
 <script src="js/medicos.js"></script>

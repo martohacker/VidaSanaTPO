@@ -155,10 +155,49 @@ async function deletePaciente(id) {
 // --- HISTORIAL MÉDICO ---
 let pacienteActualId = null;
 
+// Autocompletar y deshabilitar campo médico si el usuario es médico
+function autocompletarMedicoEnFormularios() {
+    if (window.currentUser && currentUser.rol === 'MEDICO') {
+        const medicoNombre = currentUser.nombreCompleto || currentUser.nombre || '';
+        [
+            'nota-medico',
+            'diagnostico-medico',
+            'receta-medico',
+            'examen-medico',
+            'tratamiento-medico',
+            'alergia-medico',
+            'vacuna-medico'
+        ].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.value = medicoNombre;
+                input.disabled = true;
+            }
+        });
+    } else {
+        // Si no es médico, habilitar el campo
+        [
+            'nota-medico',
+            'diagnostico-medico',
+            'receta-medico',
+            'examen-medico',
+            'tratamiento-medico',
+            'alergia-medico',
+            'vacuna-medico'
+        ].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.disabled = false;
+            }
+        });
+    }
+}
+
 function showHistorialModal(paciente) {
     pacienteActualId = paciente.id;
     document.getElementById('historial-nombre').textContent = paciente.nombre + ' ' + paciente.apellido;
     document.getElementById('modal-historial').style.display = 'block';
+    autocompletarMedicoEnFormularios();
     loadHistorial();
 }
 
@@ -177,6 +216,7 @@ function cambiarFormularioHistorial() {
     
     // Mostrar el formulario correspondiente
     document.getElementById(`form-${tipo}`).style.display = 'flex';
+    autocompletarMedicoEnFormularios();
 }
 
 async function loadHistorial() {

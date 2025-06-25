@@ -13,6 +13,7 @@ async function handleLogin(event) {
         
         if (response.success) {
             currentUser = response.usuario;
+            window.currentUser = currentUser;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             
             // Mostrar información del usuario
@@ -97,6 +98,7 @@ function checkAuthStatus() {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
+        window.currentUser = currentUser;
         showUserInfo();
         showNavigationByRole();
         loadDashboardData();
